@@ -17,7 +17,7 @@ void main(const uint8_t BootDrive)
 {
     DISK disk;
     ClrScr();
-    printf("COOLBOOT Stage2 v0.0.11 Booted from drive: 0%xh\n", BootDrive);
+    printf("COOLBOOT Stage2 v0.0.12 Booted from drive: 0%xh\n", BootDrive);
     printf("Enabling A20 line\n");
     EnableA20();
     printf("Initialising disk 0%xh\n", BootDrive);
@@ -35,6 +35,7 @@ void main(const uint8_t BootDrive)
         printf("see documentation for more information\n");
         return;
     }
+    memcpy(g_COOLBOOTSYS_BAK, g_COOLBOOTSYS, g_COOLBOOTSIZE);   // reset the GetOption buffer
     char* KERNEL_FILE = GetOption("KERNEL_FILE");
     if(!KERNEL_FILE) return;
     char* KERNEL_FILE_NEXT = KERNEL_FILE;
@@ -55,7 +56,6 @@ void main(const uint8_t BootDrive)
         return;
     }
     *KERNEL_FILE_FINAL = tmpf;
-    printf("%s\n", KERNEL_FILE_FINAL);
     DirectoryEntry* fd = FindFile(g_CurrentDirectory, KERNEL_FILE_FINAL);
     if(!fd) {
         printf("Could not find kernel file\n");
