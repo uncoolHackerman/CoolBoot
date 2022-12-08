@@ -17,7 +17,7 @@ void main(const uint8_t BootDrive)
 {
     DISK disk;
     ClrScr();
-    printf("COOLBOOT Stage2 v0.0.1 Booted from drive: 0%xh\n", BootDrive);
+    printf("COOLBOOT Stage2 v0.0.11 Booted from drive: 0%xh\n", BootDrive);
     printf("Enabling A20 line\n");
     EnableA20();
     printf("Initialising disk 0%xh\n", BootDrive);
@@ -67,6 +67,7 @@ void main(const uint8_t BootDrive)
     if(ErrCode == KERNEL_CODE_SUCCESS) return;
     ClrScr();
     CHAR_COLOUR = 0xF4;
+    printf("COOLBOOT stage2 v0.0.11 post-kernel environment\n");
     printf("FATAL: kernel program terminated with status 0x%x\n", ErrCode);
     printf("See documentation for more information\n");
     return;
