@@ -11,6 +11,7 @@
 
 #define KERNEL_START (void*)0x20000             // chosen arbitrarily but it works
 #define CONFIG_SIGN "CB23110512v0.0.09"
+#define KERNEL_CODE_SUCCESS 0l
 
 void main(const uint8_t BootDrive)
 {
@@ -63,6 +64,7 @@ void main(const uint8_t BootDrive)
     ReadFile(&disk, BootDrive, fd, KERNEL_START);
     int (*StartKernel)(uint8_t) = KERNEL_START;
     int ErrCode = StartKernel(BootDrive);
+    if(ErrCode == KERNEL_CODE_SUCCESS) return;
     ClrScr();
     CHAR_COLOUR = 0xF4;
     printf("FATAL: kernel program terminated with status 0x%x\n", ErrCode);
