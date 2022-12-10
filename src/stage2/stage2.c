@@ -65,6 +65,7 @@ void main(const uint8_t BootDrive)
     ReadFile(&disk, BootDrive, fd, KERNEL_START);
     int (*StartKernel)(uint8_t) = KERNEL_START;
     int ErrCode = StartKernel(BootDrive);
+    __asm("cli");
     if(ErrCode == KERNEL_CODE_SUCCESS) return;
     ClrScr();
     CHAR_COLOUR = 0xF4;
