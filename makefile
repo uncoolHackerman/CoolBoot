@@ -1,7 +1,7 @@
 # makefile 05/12/2022
 # Written by Gabriel Jickells
 
-ASM=nasm
+ASM=as
 EMULATOR=qemu-system-i386
 CC32=/usr/local/i686-elf-gcc/bin/i686-elf-gcc
 LD32=/usr/local/i686-elf-gcc/bin/i686-elf-gcc
@@ -28,8 +28,9 @@ default: always bootloader
 	rm $(BINDIR)/*.o
 
 bootloader:
-	$(ASM) -f bin -o $(BINDIR)/boot.bin $(SRCDIR)/boot.asm
-	$(ASM) -f elf -o $(BINDIR)/stage2.o $(SRCDIR)/stage2/stage2.asm
+	$(ASM) $(SRCDIR)/boot.s -o $(BINDIR)/boot.o
+	ld --oformat=binary -Ttext=0x7C00 $(BINDIR)/boot.o -o $(BINDIR)/boot.bin
+	nasm -f elf -o $(BINDIR)/stage2.o $(SRCDIR)/stage2/stage2.asm
 	$(CC32) $(CFLAGS32) $(SRCDIR)/stage2/stage2.c -o $(BINDIR)/stage2a.o
 	$(LD32) $(LDFLAGS32) -T linker.ld -Wl,-Map=$(BINDIR)/stage2.map $(BINDIR)/stage2.o $(BINDIR)/stage2a.o -o $(BINDIR)/stage2.bin $(CLIBS32)
 
