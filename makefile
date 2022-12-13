@@ -1,7 +1,7 @@
 # makefile 05/12/2022
 # Written by Gabriel Jickells
 
-ASM=as
+ASM=/usr/local/i686-elf-gcc/bin/i686-elf-as
 EMULATOR=qemu-system-i386
 CC32=/usr/local/i686-elf-gcc/bin/i686-elf-gcc
 LD32=/usr/local/i686-elf-gcc/bin/i686-elf-gcc
@@ -14,7 +14,7 @@ SRCDIR=src
 BINDIR=bin
 
 # end the branch string with an underscore unless it is empty
-VERSION=0.0.12
+VERSION=0.0.13
 BRANCH=
 PLATFORM=x86
 DISK=COOLBOOT_v$(VERSION)_$(BRANCH)$(PLATFORM).img
@@ -29,10 +29,11 @@ default: always bootloader
 
 bootloader:
 	$(ASM) $(SRCDIR)/boot.s -o $(BINDIR)/boot.o
-	ld --oformat=binary -Ttext=0x7C00 $(BINDIR)/boot.o -o $(BINDIR)/boot.bin
-	nasm -f elf -o $(BINDIR)/stage2.o $(SRCDIR)/stage2/stage2.asm
+	$(LD32) $(LDFLAGS32) -T $(SRCDIR)/boot.ld -Wl,-Map=$(BINDIR)/boot.map $(BINDIR)/boot.o -o $(BINDIR)/boot.bin
+	#nasm -f elf -o $(BINDIR)/stage2.o $(SRCDIR)/stage2/stage2.asm
+	$(ASM) $(SRCDIR)/stage2/stage2.s -o $(BINDIR)/stage2.o
 	$(CC32) $(CFLAGS32) $(SRCDIR)/stage2/stage2.c -o $(BINDIR)/stage2a.o
-	$(LD32) $(LDFLAGS32) -T linker.ld -Wl,-Map=$(BINDIR)/stage2.map $(BINDIR)/stage2.o $(BINDIR)/stage2a.o -o $(BINDIR)/stage2.bin $(CLIBS32)
+	$(LD32) $(LDFLAGS32) -T $(SRCDIR)/stage2/stage2.ld -Wl,-Map=$(BINDIR)/stage2.map $(BINDIR)/stage2.o $(BINDIR)/stage2a.o -o $(BINDIR)/stage2.bin $(CLIBS32)
 
 always:
 	mkdir --parents $(BINDIR)

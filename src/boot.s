@@ -4,9 +4,7 @@ COOLBOOT bootstrap re-written in at&t syntax because it's a little easier to rea
 Written by Gabriel Jickells
 */
 
-.att_syntax
 .code16
-.section .text                      /* So the linker knows where the boot sector is */
 .globl _start
 
 jmp _start /* skip the FAT data */
@@ -128,7 +126,7 @@ Cluster2LBA:
     addw (g_DataSectionLBA), %ax
     ret
 
-MSG_Loading: .asciz "COOLBOOT v0.0.03\n\r"
+MSG_Loading: .asciz "COOLBOOT v0.0.04\n\r"
 g_DataSectionLBA: .word 0
 g_File: .ascii "STAGE2  BIN"
 /*FILE: .ascii "123456789AB" */
